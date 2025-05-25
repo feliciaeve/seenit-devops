@@ -20,14 +20,22 @@ interface Params {
 
 export const revalidate = 60;
 
-export const generateStaticParams = async () => {
-    const movies = await getMovies(1);
-    return movies.map((movie) => ({
-        params: {
-            id: movie.id.toString(),
-        },
-    }));
-};
+export async function generateStaticParams() {
+    try {
+        const res = await fetch(
+            'https://api.themoviedb.org/3/movie/popular?api_key=6b5b6a0f5508de90541e3803d441447e',
+        );
+        if (!res.ok) throw new Error('Fetch failed');
+
+        const movies = await res.json();
+        return movies.map((movie: any) => ({
+            id: movie.id,
+        }));
+    } catch (error) {
+        console.error('Failed to fetch movies:', error);
+        return []; // fallback kosong biar build tetap lanjut
+    }
+}
 
 export const generateMetadata = async ({ params }: Params) => {
     const movieId = (await params).id;
