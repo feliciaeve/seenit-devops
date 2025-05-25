@@ -1,3 +1,10 @@
+name: Build and Push Docker Image
+
+on:
+    push:
+        branches:
+            - main # atau branch lain seperti "dev"
+
 jobs:
     docker:
         runs-on: ubuntu-latest
@@ -17,6 +24,5 @@ jobs:
                   docker build -t $IMAGE_NAME:$TAG .
                   docker push $IMAGE_NAME:$TAG
 
-                  # Optional: also tag as latest
                   docker tag $IMAGE_NAME:$TAG $IMAGE_NAME:latest
                   docker push $IMAGE_NAME:latest
